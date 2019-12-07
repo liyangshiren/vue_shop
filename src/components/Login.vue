@@ -36,94 +36,121 @@
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      // 这是登陆表单的数据对象
-      loginForm: {
-        username: 'zs',
-        password: '123'
+  export default {
+    data () {
+      return {
+        // 这是登陆表单的数据对象
+        loginForm: {
+          username: 'zs',
+          password: '123'
+        },
+        // 这是表单的验证规则对象
+        loginFormRules: {
+          // 验证用户名是否合法
+          username: [
+            {
+              required: true,
+              message: '请输入登陆名称',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 10,
+              message: '长度在3到10个字符之间',
+              trigger: 'blur'
+            }
+          ],
+          // 验证密码是否合法
+          password: [
+            {
+              required: true,
+              message: '请输入密码',
+              trigger: 'blur'
+            },
+            {
+              min: 6,
+              max: 15,
+              message: '长度在6到15个字符之间',
+              trigger: 'blur'
+            }
+          ]
+        }
+      }
+    },
+    methods: {
+      // 点击重置按钮，重置登陆表单
+      resetLoginForm () {
+        this.$refs.loginFormRef.resetFields()
       },
-      // 这是表单的验证规则对象
-      loginFormRules: {
-        // 验证用户名是否合法
-        username: [
-          { required: true, message: '请输入登陆名称', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在3到10个字符之间', trigger: 'blur' }
-        ],
-        // 验证密码是否合法
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 15, message: '长度在6到15个字符之间', trigger: 'blur' }
-        ]
+      login () {
+        //async和await需成对出现
+        this.$refs.loginFormRef.validate(async valid => {
+          if (!valid) {
+            return
+          } else {
+            // 直接将axios中服务器返回值data剥离出来
+            const { data: res } = await this.$http.post('login', this.loginForm)
+            console.log(res)
+            //根据返回状态码，判断是否登陆成功
+            if(res.meta.status !== 200){
+              return console.log("登陆失败")
+            }else {
+              console.log("登陆成功")
+            }
+          }
+        })
       }
     }
-  },
-  methods: {
-    // 点击重置按钮，重置登陆表单
-    resetLoginForm () {
-      this.$refs.loginFormRef.resetFields()
-    },
-    login () {
-      this.$refs.loginFormRef.validate(async valid => {
-        if (!valid) {
-
-        } else {
-          const { data: res } = await this.$http.post('login', this.loginForm)
-          console.log(res)
-        }
-      })
-    }
   }
-}
 </script>
 
 <style lang="less" scoped>
-.login_container {
-  background-color: #2b4b6b;
-  height: 100%;
-}
+  .login_container {
+    background-color: #2b4b6b;
+    height: 100%;
+  }
 
-.login_box {
-  width: 450px;
-  height: 300px;
-  background-color: #fff;
-  border-radius: 3px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  .avatar_box {
-    height: 130px;
-    width: 130px;
-    border: 1px solid #eee;
-    border-radius: 50%;
-    padding: 10px;
-    box-shadow: #ddd;
+  .login_box {
+    width: 450px;
+    height: 300px;
+    background-color: #fff;
+    border-radius: 3px;
     position: absolute;
     left: 50%;
+    top: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
-    img {
-      width: 100%;
-      height: 100%;
+
+    .avatar_box {
+      height: 130px;
+      width: 130px;
+      border: 1px solid #eee;
       border-radius: 50%;
-      background-color: #eee;
+      padding: 10px;
+      box-shadow: #ddd;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #eee;
+      }
     }
   }
-}
 
-.login_form {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
+  .login_form {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
 
-.btns {
-  display: flex;
-  justify-content: flex-end;
-}
+  .btns {
+    display: flex;
+    justify-content: flex-end;
+  }
 </style>
