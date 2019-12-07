@@ -6,7 +6,7 @@
         <img src="../assets/logo.png" alt="">
       </div>
       <!--登陆表单-->
-      <el-form :model="loginForm" :rules="loginFormRules" lable-width="0px" class="login_form">
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" lable-width="0px" class="login_form">
         <!--用户名-->
         <el-form-item prop="username">
           <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
@@ -18,7 +18,7 @@
         <!--按钮区域-->
         <el-form-item class="btns">
           <el-button type="primary">登陆</el-button>
-          <el-button type="info">重置</el-button>
+          <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -47,6 +47,12 @@ export default {
           { min: 6, max: 15, message: '长度在6到15个字符之间', trigger: 'blur' }
         ]
       }
+    }
+  },
+  methods: {
+    // 点击重置按钮，重置登陆表单
+    resetLoginForm () {
+      this.$refs.loginFormRef.resetFields()
     }
   }
 }
