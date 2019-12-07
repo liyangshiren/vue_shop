@@ -90,12 +90,16 @@
           } else {
             // 直接将axios中服务器返回值data剥离出来
             const { data: res } = await this.$http.post('login', this.loginForm)
-            console.log(res)
             //根据返回状态码，判断是否登陆成功
             if(res.meta.status !== 200){
               return this.$message.error('登陆失败')
             }else {
               this.$message.success('登陆成功')
+              //1.登陆成功之后的token，保存到客户端的sessionStorage中
+              console.log(res)
+              window.sessionStorage.setItem('token',res.data.token)
+              await this.$router.push('/home')
+              //2.通过编程式导航跳转到后台主页，路由地址是/home
             }
           }
         })
