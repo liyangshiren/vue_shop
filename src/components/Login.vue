@@ -41,8 +41,8 @@
       return {
         // 这是登陆表单的数据对象
         loginForm: {
-          username: 'zs',
-          password: '123'
+          username: 'admin',
+          password: '123456'
         },
         // 这是表单的验证规则对象
         loginFormRules: {
@@ -93,9 +93,9 @@
             console.log(res)
             //根据返回状态码，判断是否登陆成功
             if(res.meta.status !== 200){
-              return console.log("登陆失败")
+              return this.$message.error('登陆失败')
             }else {
-              console.log("登陆成功")
+              this.$message.success('登陆成功')
             }
           }
         })
