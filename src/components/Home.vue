@@ -19,7 +19,7 @@
           text-color="#fff"
           active-text-color="#409EFF"
           unique-opened
-          :collapse="isCollapse" :collapse-transition="false">
+          :collapse="isCollapse" :collapse-transition="false" :router="true">
           <!--一级菜单-->
           <el-submenu :index="item.id +'' " v-for="item in menulist" :key="item.id">
             <!--一级菜单模板区域-->
@@ -31,7 +31,7 @@
             </template>
 
             <!--二级菜单-->
-            <el-menu-item :index="subItem.id +'' " v-for="subItem in item.children" :key="subItem.id">
+            <el-menu-item :index="'/'+ subItem.path " v-for="subItem in item.children" :key="subItem.id">
               <!--图标-->
               <i class="el-icon-menu"></i>
               <!--文本-->
