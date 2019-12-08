@@ -11,12 +11,15 @@
     <!--页面主体区域-->
     <el-container>
       <!--侧边栏-->
-      <el-aside width="200px">
+      <el-aside :width="isCollapse ? '64px':'180px'">
+        <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!--侧边栏菜单区域-->
         <el-menu
           background-color="#333744"
           text-color="#fff"
-          active-text-color="#409EFF">
+          active-text-color="#409EFF"
+          unique-opened
+          :collapse="isCollapse" :collapse-transition="false">
           <!--一级菜单-->
           <el-submenu :index="item.id +'' " v-for="item in menulist" :key="item.id">
             <!--一级菜单模板区域-->
@@ -49,13 +52,14 @@
       return {
         // 左侧菜单数据
         menulist: [],
-        iconsObj:{
+        iconsObj: {
           '125': 'iconfont icon-user',
           '103': 'iconfont icon-tijikongjian',
           '101': 'iconfont icon-shangpin',
           '102': 'iconfont icon-danju',
           '145': 'iconfont icon-baobiao'
-        }
+        },
+        isCollapse:false
       }
     },
     created () {
@@ -74,6 +78,10 @@
         } else {
           this.menulist = res.data
         }
+      },
+      //点击按钮左侧菜单栏展开或者关闭
+      toggleCollapse () {
+        this.isCollapse = !this.isCollapse
       }
     }
   }
@@ -105,12 +113,28 @@
 
   .el-aside {
     background-color: #333744;
+
+    .el-menu {
+      border-right: 0;
+    }
   }
 
   .el-main {
     background-color: #eaedf1;
   }
-  .iconfont{
+
+  .iconfont {
     margin-right: 10px;
+  }
+
+  .toggle-button {
+    background-color: #4A5064;
+    font-size: 10px;
+    line-height: 24px;
+    color: #fff;
+    text-align: center;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+
   }
 </style>
