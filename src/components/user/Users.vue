@@ -21,6 +21,15 @@
           <el-button type="primary">添加用户</el-button>
         </el-row>
       </div>
+      <!--用户列表区域-->
+      <el-table :data="userList" stripe border>
+        <el-table-column label="姓名" prop="username"></el-table-column>
+        <el-table-column label="邮箱" prop="email"></el-table-column>
+        <el-table-column label="电话" prop="mobile"></el-table-column>
+        <el-table-column label="角色" prop="role_name"></el-table-column>
+        <el-table-column label="状态" prop="mg_state"></el-table-column>
+        <el-table-column label="操作"></el-table-column>
+      </el-table>
     </el-card>
   </div>
 </template>
@@ -35,8 +44,8 @@
           pagenum: '1',
           pagesize: '10'
         },
-        userList:[],
-        total:0
+        userList: [],
+        total: 0
       }
     },
     created () {

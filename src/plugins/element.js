@@ -2,7 +2,7 @@ import Vue from 'vue'
 import {
   Button, Form, FormItem, Input, Container, Header, Aside, Main,
   Menu, Submenu, MenuItem,
-  Breadcrumb, BreadcrumbItem, Card, Row, Col
+  Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn
 } from 'element-ui'
 //导入弹框提示组件
 import { Message } from 'element-ui'
@@ -23,5 +23,7 @@ Vue.use(BreadcrumbItem)
 Vue.use(Card)
 Vue.use(Row)
 Vue.use(Col)
+Vue.use(TableColumn)
+Vue.use(Table)
 //挂载到Vue组件上，这样每个vue都可以直接通过this.$message来访问
 Vue.prototype.$message = Message
