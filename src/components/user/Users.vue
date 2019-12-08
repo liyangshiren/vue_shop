@@ -18,7 +18,7 @@
             </el-input>
           </el-col>
           <el-col :span="4"></el-col>
-          <el-button type="primary">添加用户</el-button>
+          <el-button type="primary" @click="addDialogVisible=true">添加用户</el-button>
         </el-row>
       </div>
       <!--用户列表区域-->
@@ -57,6 +57,19 @@
         :total="total">
       </el-pagination>
     </el-card>
+    <!--添加用户的对话框-->
+    <el-dialog
+      title="提示"
+      :visible.sync="addDialogVisible"
+      width="30%">
+      <!--内容主体区域-->
+      <span>这是一段信息</span>
+      <!--底部区域-->
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="addDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -73,7 +86,9 @@
           pagesize: '10'
         },
         userList: [],
-        total: 0
+        total: 0,
+        //控制添加用户对话框的显示与隐藏
+        addDialogVisible: false
       }
     },
     created () {
@@ -99,8 +114,8 @@
       },
       //监听switch开关状态的改变
       async userStateChanged (userinfo) {
-        const {data: res} = await this.$http.put(`users/${userinfo.id}/state/${userinfo.mg_state}`)
-        if(res.meta.status !== 200){
+        const { data: res } = await this.$http.put(`users/${userinfo.id}/state/${userinfo.mg_state}`)
+        if (res.meta.status !== 200) {
           userinfo.mg_state = !userinfo.mg_state
           return this.$message.error('更新用户状态失败!')
         }
