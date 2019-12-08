@@ -40,8 +40,11 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <!--      右侧内容主体-->
-      <el-main>Main</el-main>
+      <!--右侧内容主体-->
+      <el-main>
+        <!--路由占位符-->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -59,7 +62,7 @@
           '102': 'iconfont icon-danju',
           '145': 'iconfont icon-baobiao'
         },
-        isCollapse:false
+        isCollapse: false
       }
     },
     created () {
