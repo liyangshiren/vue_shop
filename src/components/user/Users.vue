@@ -61,9 +61,9 @@
     <el-dialog
       title="添加用户"
       :visible.sync="addDialogVisible"
-      width="30%">
+      width="50%" @close="addDialogClosed">
       <!--内容主体区域-->
-      <el-form :model="addForm" :rules="addFormRules" ref="ruleFormRef"
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef"
                label-width="70px" class="demo-ruleForm">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addForm.username"></el-input>
@@ -90,6 +90,26 @@
 <script>
   export default {
     data () {
+      //验证邮箱的规则
+      const checkEmail = (rule, value, cb) => {
+        //验证邮箱的正则表达式
+        const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+        if (regEmail.test(value)) {
+          //合法的邮箱
+          return cb()
+        }
+        cb(new Error('请输入合法的邮箱'))
+      }
+      //验证手机号的规则
+      const checkMobile = (rule, value, cb) => {
+        //验证手机号的正则表达式
+        const regMobile = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/
+        if (regMobile.test(value)) {
+          //合法手机号
+          return cb()
+        }
+        cb(new Error('请输入合法的手机号'))
+      }
       return {
         //获取用户列表的参数对象
         queryInfo: {
@@ -108,7 +128,7 @@
           username: '',
           password: '',
           email: '',
-          mobile:''
+          mobile: ''
         },
         //添加表单的验证规则对象
         addFormRules: {
@@ -143,12 +163,20 @@
               required: true,
               message: '请输入邮箱',
               trigger: 'blur'
+            },
+            {
+              validator: checkEmail,
+              trigger: 'blur'
             }
           ],
-          mobile:[
+          mobile: [
             {
               required: true,
               message: '请输入手机号码',
+              trigger: 'blur'
+            },
+            {
+              validator: checkMobile,
               trigger: 'blur'
             }
           ]
@@ -184,6 +212,10 @@
           return this.$message.error('更新用户状态失败!')
         }
         this.$message.success('更新用户状态成功')
+      },
+      //监听添加用户对话框的关闭事件
+      addDialogClosed(){
+        this.$refs.addFormRef.resetFields()
       }
     }
   }
