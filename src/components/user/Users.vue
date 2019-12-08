@@ -28,12 +28,23 @@
         <el-table-column label="邮箱" prop="email"></el-table-column>
         <el-table-column label="电话" prop="mobile"></el-table-column>
         <el-table-column label="角色" prop="role_name"></el-table-column>
-        <el-table-column label="状态" prop="mg_state">
+        <el-table-column label="状态">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.mg_state"></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作" width="180px">
+          <template slot-scope="scope">
+            <!--修改按钮-->
+            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+            <!--删除按钮-->
+            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+            <!--分配角色按钮-->
+            <el-tooltip placement="top" content="分配角色" effect="dark" :enterable="false">
+              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
   </div>
