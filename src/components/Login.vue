@@ -36,76 +36,76 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        // 这是登陆表单的数据对象
-        loginForm: {
-          username: 'admin',
-          password: '123456'
-        },
-        // 这是表单的验证规则对象
-        loginFormRules: {
-          // 验证用户名是否合法
-          username: [
-            {
-              required: true,
-              message: '请输入登陆名称',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 10,
-              message: '长度在3到10个字符之间',
-              trigger: 'blur'
-            }
-          ],
-          // 验证密码是否合法
-          password: [
-            {
-              required: true,
-              message: '请输入密码',
-              trigger: 'blur'
-            },
-            {
-              min: 6,
-              max: 15,
-              message: '长度在6到15个字符之间',
-              trigger: 'blur'
-            }
-          ]
-        }
-      }
-    },
-    methods: {
-      // 点击重置按钮，重置登陆表单
-      resetLoginForm () {
-        this.$refs.loginFormRef.resetFields()
+export default {
+  data () {
+    return {
+      // 这是登陆表单的数据对象
+      loginForm: {
+        username: 'admin',
+        password: '123456'
       },
-      login () {
-        //async和await需成对出现
-        this.$refs.loginFormRef.validate(async valid => {
-          if (!valid) {
-            return
-          } else {
-            // 直接将axios中服务器返回值data剥离出来
-            const { data: res } = await this.$http.post('login', this.loginForm)
-            //根据返回状态码，判断是否登陆成功
-            if (res.meta.status !== 200) {
-              return this.$message.error('登陆失败')
-            } else {
-              this.$message.success('登陆成功')
-              //1.登陆成功之后的token，保存到客户端的sessionStorage中
-              console.log(res)
-              window.sessionStorage.setItem('token', res.data.token)
-              await this.$router.push('/home')
-              //2.通过编程式导航跳转到后台主页，路由地址是/home
-            }
+      // 这是表单的验证规则对象
+      loginFormRules: {
+        // 验证用户名是否合法
+        username: [
+          {
+            required: true,
+            message: '请输入登陆名称',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 10,
+            message: '长度在3到10个字符之间',
+            trigger: 'blur'
           }
-        })
+        ],
+        // 验证密码是否合法
+        password: [
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'blur'
+          },
+          {
+            min: 6,
+            max: 15,
+            message: '长度在6到15个字符之间',
+            trigger: 'blur'
+          }
+        ]
       }
     }
+  },
+  methods: {
+    // 点击重置按钮，重置登陆表单
+    resetLoginForm () {
+      this.$refs.loginFormRef.resetFields()
+    },
+    login () {
+      // async和await需成对出现
+      this.$refs.loginFormRef.validate(async valid => {
+        if (!valid) {
+
+        } else {
+          // 直接将axios中服务器返回值data剥离出来
+          const { data: res } = await this.$http.post('login', this.loginForm)
+          // 根据返回状态码，判断是否登陆成功
+          if (res.meta.status !== 200) {
+            return this.$message.error('登陆失败')
+          } else {
+            this.$message.success('登陆成功')
+            // 1.登陆成功之后的token，保存到客户端的sessionStorage中
+            console.log(res)
+            window.sessionStorage.setItem('token', res.data.token)
+            await this.$router.push('/home')
+            // 2.通过编程式导航跳转到后台主页，路由地址是/home
+          }
+        }
+      })
+    }
   }
+}
 </script>
 
 <style lang="less" scoped>

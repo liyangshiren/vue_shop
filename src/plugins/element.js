@@ -3,9 +3,9 @@ import {
   Button, Form, FormItem, Input, Container, Header, Aside, Main,
   Menu, Submenu, MenuItem,
   Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn, Switch, Tooltip,
-  Pagination, Dialog
+  Pagination, Dialog, MessageBox
 } from 'element-ui'
-//导入弹框提示组件
+// 导入弹框提示组件
 import { Message } from 'element-ui'
 
 Vue.use(Button)
@@ -30,5 +30,6 @@ Vue.use(Switch)
 Vue.use(Tooltip)
 Vue.use(Pagination)
 Vue.use(Dialog)
-//挂载到Vue组件上，这样每个vue都可以直接通过this.$message来访问
+// 挂载到Vue组件上，这样每个vue都可以直接通过this.$message来访问
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm
