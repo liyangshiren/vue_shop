@@ -20,10 +20,11 @@
         <!-- 展开列-->
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <el-row v-for="(item1, i1) in scope.row.children" :key="item1.id">
+            <el-row :class="['bdbottom',i1 === 0 ? 'bdtop':'']" v-for="(item1, i1) in scope.row.children" :key="item1.id">
               <!--渲染一级权限-->
               <el-col :span="5">
                 <el-tag>{{item1.authName}}</el-tag>
+                <i class="el-icon-caret-right"></i>
               </el-col>
               <!--渲染二级、三级权限-->
               <el-col :span="19"></el-col>
@@ -70,4 +71,14 @@
   }
 </script>
 
-<style xml:lang="less" scoped></style>
+<style xml:lang="less" scoped>
+  .el-tag{
+    margin: 7px;
+  }
+  .bdtop{
+    border-top: 1px solid #eee;
+  }
+  .bdbottom{
+    border-bottom: 1px solid #eee;
+  }
+</style>
