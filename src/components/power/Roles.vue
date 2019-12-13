@@ -16,6 +16,18 @@
         </el-col>
       </el-row>
       <!--角色列表区-->
+      <el-table :data="roleList" border stripe>
+        <el-table-column type="index"></el-table-column>
+        <el-table-column label="角色名称" prop="roleName"></el-table-column>
+        <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
+        <el-table-column label="操作" width="300px">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
+            <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+            <el-button size="mini" type="warning" icon="el-icon-setting">分配权限</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-card>
   </div>
 </template>
@@ -39,7 +51,6 @@
           return this.$message.error('获取角色列表失败！')
         }
         this.roleList = res.data
-        console.log(res.data)
       }
     }
 
