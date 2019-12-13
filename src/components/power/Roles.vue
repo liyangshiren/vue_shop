@@ -20,7 +20,8 @@
         <!-- 展开列-->
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <el-row :class="['bdbottom','vcenter',i1 === 0 ? 'bdtop':'']" v-for="(item1, i1) in scope.row.children" :key="item1.id">
+            <el-row :class="['bdbottom','vcenter',i1 === 0 ? 'bdtop':'']" v-for="(item1, i1) in scope.row.children"
+                    :key="item1.id">
               <!--渲染一级权限-->
               <el-col :span="5">
                 <el-tag>{{item1.authName}}</el-tag>
@@ -29,13 +30,15 @@
               <!--渲染二级、三级权限-->
               <el-col :span="19">
                 <!--通过for循环 嵌套渲染二级权限-->
-                <el-row :class="[i2 === 0 ? '':'bdtop','vcenter']" v-for="(item2, i2) in item1.children" :key="item2.id">
+                <el-row :class="[i2 === 0 ? '':'bdtop','vcenter']" v-for="(item2, i2) in item1.children"
+                        :key="item2.id">
                   <el-col :span="6">
                     <el-tag type="success">{{item2.authName}}</el-tag>
                     <i class="el-icon-caret-right"></i>
                   </el-col>
                   <el-col :span="18">
-                    <el-tag v-for="(item3 ,i3) in item2.children" :key="item3.id" type="warning">
+                    <el-tag v-for="(item3 ,i3) in item2.children" :key="item3.id" closable @close="removeRightById()"
+                            type="warning">
                       {{item3.authName}}
                     </el-tag>
                   </el-col>
@@ -79,22 +82,40 @@
           return this.$message.error('获取角色列表失败！')
         }
         this.roleList = res.data
+      },
+      //根据id删除对应的权限
+      async removeRightById() {
+        //提示用户是否要删除
+        const confirmResult = await this.$confirm('确认删除该权限吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).catch(err => err)
+
+        if(confirmResult !== 'confirm'){
+          return this.$message.info('取消了删除!')
+        }
+
+        console.log('确认了删除！')
       }
     }
   }
 </script>
 
 <style xml:lang="less" scoped>
-  .el-tag{
+  .el-tag {
     margin: 7px;
   }
-  .bdtop{
+
+  .bdtop {
     border-top: 1px solid #eee;
   }
-  .bdbottom{
+
+  .bdbottom {
     border-bottom: 1px solid #eee;
   }
-  .vcenter{
+
+  .vcenter {
     display: flex;
     align-items: center;
   }
