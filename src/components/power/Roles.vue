@@ -17,6 +17,20 @@
       </el-row>
       <!--角色列表区-->
       <el-table :data="roleList" border stripe>
+        <!-- 展开列-->
+        <el-table-column type="expand">
+          <template slot-scope="scope">
+            <el-row v-for="(item1, i1) in scope.row.children" :key="item1.id">
+              <!--渲染一级权限-->
+              <el-col :span="5">
+                <el-tag>{{item1.authName}}</el-tag>
+              </el-col>
+              <!--渲染二级、三级权限-->
+              <el-col :span="19"></el-col>
+            </el-row>
+          </template>
+        </el-table-column>
+        <!-- 索引列-->
         <el-table-column type="index"></el-table-column>
         <el-table-column label="角色名称" prop="roleName"></el-table-column>
         <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
@@ -47,14 +61,12 @@
     methods: {
       async getRoleList() {
         const { data: res } = await this.$http.get('roles')
-        if(res.meta.status !== 200){
+        if (res.meta.status !== 200) {
           return this.$message.error('获取角色列表失败！')
         }
         this.roleList = res.data
       }
     }
-
-
   }
 </script>
 
