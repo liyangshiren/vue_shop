@@ -24,7 +24,9 @@
                     :key="item1.id">
               <!--渲染一级权限-->
               <el-col :span="5">
-                <el-tag>{{item1.authName}}</el-tag>
+                <el-tag closable
+                        @close="removeRightById(scope.row, item1.id)">{{item1.authName}}
+                </el-tag>
                 <i class="el-icon-caret-right"></i>
               </el-col>
               <!--渲染二级、三级权限-->
@@ -33,11 +35,14 @@
                 <el-row :class="[i2 === 0 ? '':'bdtop','vcenter']" v-for="(item2, i2) in item1.children"
                         :key="item2.id">
                   <el-col :span="6">
-                    <el-tag type="success">{{item2.authName}}</el-tag>
+                    <el-tag type="success" closable
+                            @close="removeRightById(scope.row, item2.id)">{{item2.authName}}
+                    </el-tag>
                     <i class="el-icon-caret-right"></i>
                   </el-col>
                   <el-col :span="18">
-                    <el-tag v-for="(item3 ,i3) in item2.children" :key="item3.id" closable @close="removeRightById()"
+                    <el-tag v-for="(item3 ,i3) in item2.children" :key="item3.id" closable
+                            @close="removeRightById(scope.row, item3.id)"
                             type="warning">
                       {{item3.authName}}
                     </el-tag>
@@ -66,17 +71,17 @@
 <script>
 
   export default {
-    data() {
+    data () {
       return {
         // 所有角色列表数据
         roleList: []
       }
     },
-    created() {
+    created () {
       this.getRoleList()
     },
     methods: {
-      async getRoleList() {
+      async getRoleList () {
         const { data: res } = await this.$http.get('roles')
         if (res.meta.status !== 200) {
           return this.$message.error('获取角色列表失败！')
@@ -84,7 +89,7 @@
         this.roleList = res.data
       },
       //根据id删除对应的权限
-      async removeRightById() {
+      async removeRightById (role, rightId) {
         //提示用户是否要删除
         const confirmResult = await this.$confirm('确认删除该权限吗？', '提示', {
           confirmButtonText: '确定',
@@ -92,11 +97,16 @@
           type: 'warning'
         }).catch(err => err)
 
-        if(confirmResult !== 'confirm'){
+        if (confirmResult !== 'confirm') {
           return this.$message.info('取消了删除!')
         }
 
-        console.log('确认了删除！')
+        const { data: res } = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
+        if (res.meta.status !== 200) {
+          return this.$message.error('删除权限失败!')
+        }
+        // this.getRoleList() 避免刷新整个列表
+        role.children = res.data
       }
     }
   }
