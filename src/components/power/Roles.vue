@@ -60,15 +60,20 @@
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
             <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
-            <el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRightDialog">分配权限</el-button>
+            <el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRightDialog(scope.row)">分配权限
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
     <!--     分配权限的对话框-->
-    <el-dialog title="分配权限" :visible.sync="setRightDialogVisible" width="50%">
-<!--      树形控件-->
+    <el-dialog @close="setRightDialogClosed" title="分配权限" :visible.sync="setRightDialogVisible" width="50%">
+      <!--      树形控件-->
       <el-tree
+        node-key="id"
+        show-checkbox
+        default-expand-all
+        :default-checked-keys="defKeys"
         :props="treeProps"
         :data="rightsList">
       </el-tree>
@@ -92,10 +97,12 @@
         //所有权限的数据
         rightsList: [],
         //树形控件的属性绑定对象
-        treeProps:{
-          label:'authName',
-          children:'children'
-        }
+        treeProps: {
+          label: 'authName',
+          children: 'children'
+        },
+        //默认选中的节点的id值
+        defKeys: []
       }
     },
     created () {
@@ -130,7 +137,7 @@
         role.children = res.data
       },
       //展示分配权限的对话框
-      async showSetRightDialog () {
+      async showSetRightDialog (role) {
         //获取所有权限数据
         const { data: res } = await this.$http.get('rights/tree')
         if (res.meta.status !== 200) {
@@ -138,8 +145,23 @@
         }
         //把获取到的权限数据保存到data中
         this.rightsList = res.data
+        //递归获取三级节点的id
+        this.getLeafKeys(role, this.defKeys)
         console.log(this.rightsList)
         this.setRightDialogVisible = true
+      },
+      // 通过递归的形式将三级权限的id拿到赋值到 defKeys 中
+      getLeafKeys (node, arr) {
+        // 如果当前node节点不包含 children 属性，则是三级节点
+        if (!node.children) {
+          return arr.push(node.id)
+        }
+
+        node.children.forEach(item => this.getLeafKeys(item, arr))
+      },
+      //监听分配权限对话框的关闭事件，将 defKey 置空， 不然arr会越积越多
+      setRightDialogClosed () {
+        this.defKeys = []
       }
     }
   }
