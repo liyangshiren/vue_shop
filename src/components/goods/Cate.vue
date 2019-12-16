@@ -193,23 +193,32 @@
       parentCateChanged() {
         //如果 selectedKeys 数组中的 length 大于 0，证明选中了父级分类
         //反之，就说明没有选中任何父级分类
-        if(this.selectedKeys.length > 0 ){
-           this.addCateForm.cat_pid =  this.selectedKeys[this.selectedKeys.length-1]
+        if (this.selectedKeys.length > 0) {
+          this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]
           //为当前分类的等级赋值
-           this.addCateForm.cat_level = this.selectedKeys.length
+          this.addCateForm.cat_level = this.selectedKeys.length
           return
-        }else {
-          this.addCateForm.cat_pid =  0
+        } else {
+          this.addCateForm.cat_pid = 0
           //为当前分类的等级赋值
           this.addCateForm.cat_level = 0
         }
       },
       //点击按钮，添加新的分类
-      addCate(){
-        console.log(this.addCateForm)
+      addCate() {
+        this.$refs.addCateFormRef.validate(async valid => {
+          if (!valid) return
+          const { data: res } = await this.$http.post(`categories`, this.addCateForm)
+          if (res.meta.status !== 201) {
+            return this.$message.error('添加分类失败！')
+          }
+          this.$message.success('添加分类成功！')
+          this.getCateList()
+          this.addCateDialogVisible = false
+        })
       },
       //监听对话框的关闭事件，重置表单数据
-      addCateDialogClosed(){
+      addCateDialogClosed() {
         this.$refs.addCateFormRef.resetFields()
         this.selectedKeys = []
         this.addCateForm.cat_pid = 0
