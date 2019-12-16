@@ -59,9 +59,8 @@
           <!--options 用来指定数据源-->
           <!--props 用来指定配置对象-->
           <el-cascader
-            expand-trigger="hover"
             :options="parentCateList"
-            :props="cascaderProps"
+            :props="{ expandTrigger: 'hover',value:'cat_id',label:'cat_name',children:'children' }"
             v-model="selectedKeys"
             @change="parentCateChanged"
             clearable change-on-select>
@@ -134,12 +133,6 @@
         },
         //父级分类的列表
         parentCateList: [],
-        //指定级联选择器的配置对象
-        cascaderProps: {
-          value: 'cat_id',
-          label: 'cat_name',
-          children: 'children'
-        },
         //选中的父级分类的Id数组
         selectedKeys: []
 
