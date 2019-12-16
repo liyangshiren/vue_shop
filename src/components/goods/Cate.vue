@@ -11,7 +11,7 @@
     <el-card>
       <el-row>
         <el-col>
-          <el-button style="margin-bottom: 15px" type="primary">添加分类</el-button>
+          <el-button style="margin-bottom: 15px" type="primary" @click="showAddCateDialog">添加分类</el-button>
         </el-col>
         <!--表格-->
         <tree-table :data="catelist" :columns="columns" :selection-type="false" :expand-type="false"
@@ -27,7 +27,7 @@
             <el-tag size="mini" type="success" v-else-if="scope.row.cat_level === 1">二级</el-tag>
             <el-tag size="mini" type="warning" v-else>三级</el-tag>
           </template>
-<!--          操作-->
+          <!--          操作-->
           <template slot="opt" slot-scope="scope">
             <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
             <el-button type="danger" icon="el-icon-search" size="mini">删除</el-button>
@@ -43,6 +43,27 @@
                        :total="total"></el-pagination>
       </el-row>
     </el-card>
+
+    <!--添加分类的对话框-->
+    <el-dialog
+      title="添加分类"
+      :visible.sync="addCateDialogVisible"
+      width="50%"
+      :before-close="handleClose">
+      <!--添加分类的表单-->
+      <el-form :model="addCateForm" :rules="addCateFormRules"
+               ref="addCateFormRef" label-width="100px">
+        <el-form-item label="分类名称：" prop="cat_name">
+          <el-input v-model="addCateForm.cat_name"></el-input>
+        </el-form-item>
+        <el-form-item label="父级分类：">
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="addCateDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addCateDialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -84,7 +105,27 @@
             //表示，将当前列使用的模板名称
             template: 'opt'
           }
-        ]
+        ],
+        //控制添加分类对话框的显示与隐藏
+        addCateDialogVisible: false,
+        //添加分类的表单数据对象
+        addCateForm: {
+          //将要添加的分类的名称
+          cat_name: '',
+          //父级分类id
+          cat_pid: 0,
+          //分类的登记，默认要添加的是一级分类
+          cat_level: 0
+        },
+        //添加分类表单的验证规则对象
+        addCateFormRules: {
+          cat_name: [
+            { required: true, message: '请输入分类名称', trigger: 'blur' }
+          ]
+        },
+        //父级分类的列表
+        parentCateList:[]
+
       }
     },
     created() {
@@ -104,14 +145,31 @@
         this.total = res.data.total
       },
       //监听 pageSize 改变
-      handleSizeChange(newSize){
+      handleSizeChange(newSize) {
         this.queryInfo.pagesize = newSize
         this.getCateList()
       },
       // 监听，pageNum 改变
-      handleCurrentChange(newPage){
+      handleCurrentChange(newPage) {
         this.queryInfo.pagenum = newPage
         this.getCateList()
+      },
+      // 点击显示添加商品分类对话框
+      showAddCateDialog() {
+        // 获取父级分类的数据礼拜
+        this.getParentCateList()
+        // 展示出对话框
+        this.addCateDialogVisible = true
+      },
+      //获取父级分类的数据列表
+      async getParentCateList(){
+        const {data: res} = await this.$http.get(`categories`,{params:{type: 2}})
+
+        if(res.meta.status !== 200){
+          return this.$message.error('获取父级分类数据失败！')
+        }
+
+       this.parentCateList = res.data
       }
     }
   }
