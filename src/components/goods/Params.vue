@@ -28,8 +28,16 @@
       </el-row>
       <!--tab 页签区域-->
       <el-tabs v-model="activeName" @tab-click="handleTabClick">
-        <el-tab-pane label="动态参数" name="first">动态参数</el-tab-pane>
-        <el-tab-pane label="静态属性" name="second">静态属性</el-tab-pane>
+        <!--添加动态参数的面板-->
+        <el-tab-pane label="动态参数" name="first">
+          <!--添加动态参数的按钮-->
+          <el-button type="primary" size="mini" :disabled="isBtnDisable">添加参数</el-button>
+        </el-tab-pane>
+        <!--添加静态属性的面板-->
+        <el-tab-pane label="静态属性" name="second">
+          <!--添加静态属性的按钮-->
+          <el-button type="primary" size="mini" :disabled="isBtnDisable">添加属性</el-button>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>
@@ -52,18 +60,18 @@
     },
     methods: {
       //获取所有的商品分类
-      async getCateList(){
-        const {data:res}= await this.$http.get(`categories`)
-        if(res.meta.status !==200){
+      async getCateList() {
+        const { data: res } = await this.$http.get(`categories`)
+        if (res.meta.status !== 200) {
           this.$message.error('获取商品分类失败！')
         }
 
         this.catelist = res.data
       },
       //级联选择框选中项变化，会触发这个函数
-      handleChange(){
+      handleChange() {
         //证明选中的不是三级分类
-        if(this.selectedCateKeys.length !== 3){
+        if (this.selectedCateKeys.length !== 3) {
           this.selectedCateKeys = []
           return
         }
@@ -72,15 +80,24 @@
         console.log(this.selectedCateKeys)
       },
       // tab 页签点击事件的处理函数
-      handleTabClick(){
+      handleTabClick() {
         console.log(this.activeName)
+      }
+    },
+    computed: {
+      //如果按钮需要被禁用，则返回true，否则返回false
+      isBtnDisable(){
+        if(this.selectedCateKeys.length !==3){
+          return true
+        }
+        return false
       }
     }
   }
 </script>
 
 <style lang="less" scoped>
-  .cat_opt{
+  .cat_opt {
     margin: 15px 0px;
   }
 </style>
