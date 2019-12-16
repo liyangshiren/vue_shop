@@ -15,7 +15,12 @@
         </el-col>
         <!--表格-->
         <tree-table :data="catelist" :columns="columns" :selection-type="false" :expand-type="false"
-        show-index index-text="#" border ></tree-table>
+                    show-index index-text="#" border>
+          <template slot="isok" slot-scope="scope">
+            <i class="el-icon-success" v-if="scope.row.cat_deleted === false" style="color: green"></i>
+            <i class="el-icon-error"  v-else style="color: red"></i>
+          </template>
+        </tree-table>
         <!--分页-->
       </el-row>
     </el-card>
@@ -37,10 +42,18 @@
         //总数据条数
         total: 0,
         //为 table 指定列的定义
-        columns: [{
-          label: '分类名称',
-          prop: 'cat_name'
-        }]
+        columns: [
+          {
+            label: '分类名称',
+            prop: 'cat_name'
+          }, {
+            label: '是否有效',
+            //表示，将当前列定义为模板列
+            type: 'template',
+            //表示，将当前列使用的模板名称
+            template: 'isok'
+          }
+        ]
       }
     },
     created() {
