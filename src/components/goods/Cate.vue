@@ -48,8 +48,7 @@
     <el-dialog
       title="添加分类"
       :visible.sync="addCateDialogVisible"
-      width="50%"
-      :before-close="handleClose">
+      width="50%">
       <!--添加分类的表单-->
       <el-form :model="addCateForm" :rules="addCateFormRules"
                ref="addCateFormRef" label-width="100px">
@@ -57,6 +56,16 @@
           <el-input v-model="addCateForm.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="父级分类：">
+          <!--options 用来指定数据源-->
+          <!--props 用来指定配置对象-->
+          <el-cascader
+            expand-trigger="hover"
+            :options="parentCateList"
+            :props="cascaderProps"
+            v-model="selectedKeys"
+            @change="parentCateChanged"
+            clearable change-on-select>
+          </el-cascader>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -124,7 +133,15 @@
           ]
         },
         //父级分类的列表
-        parentCateList:[]
+        parentCateList: [],
+        //指定级联选择器的配置对象
+        cascaderProps: {
+          value: 'cat_id',
+          label: 'cat_name',
+          children: 'children'
+        },
+        //选中的父级分类的Id数组
+        selectedKeys: []
 
       }
     },
@@ -162,14 +179,19 @@
         this.addCateDialogVisible = true
       },
       //获取父级分类的数据列表
-      async getParentCateList(){
-        const {data: res} = await this.$http.get(`categories`,{params:{type: 2}})
+      async getParentCateList() {
+        const { data: res } = await this.$http.get(`categories`, { params: { type: 2 } })
 
-        if(res.meta.status !== 200){
+        if (res.meta.status !== 200) {
           return this.$message.error('获取父级分类数据失败！')
         }
 
-       this.parentCateList = res.data
+        console.log(res.data)
+        this.parentCateList = res.data
+      },
+      //选择项发生变化触发这个函数
+      parentCateChanged() {
+        console.log(this.selectedKeys)
       }
     }
   }
@@ -177,4 +199,8 @@
 
 
 <style lang="less" scoped>
+  .el-cascader {
+    width: 100%;
+    max-height: 200px;
+  }
 </style>
