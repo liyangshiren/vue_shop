@@ -11,7 +11,7 @@
     <el-card>
       <el-row>
         <el-col>
-          <el-button type="primary">添加分类</el-button>
+          <el-button style="margin-bottom: 15px" type="primary">添加分类</el-button>
         </el-col>
         <!--表格-->
         <tree-table :data="catelist" :columns="columns" :selection-type="false" :expand-type="false"
@@ -118,4 +118,5 @@
 </script>
 
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+</style>
