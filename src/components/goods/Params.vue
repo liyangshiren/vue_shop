@@ -35,7 +35,11 @@
           <!--动态参数的表格-->
           <el-table :data="manyTableData" border stripe>
             <!--展开行-->
-            <el-table-column type="expand"></el-table-column>
+            <el-table-column type="expand">
+              <template slot-scope="scope">
+                <el-tag v-for="(item,i) in scope.row.attr_vals" :key="i" closable>{{item}}</el-tag>
+              </template>
+            </el-table-column>
             <!--索引列-->
             <el-table-column type="index"></el-table-column>
             <el-table-column label="参数名称" prop="attr_name"></el-table-column>
@@ -44,7 +48,8 @@
                 <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.attr_id)">
                   修改
                 </el-button>
-                <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeParams(scope.row.attr_id)">删除</el-button>
+                <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeParams(scope.row.attr_id)">删除
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -65,7 +70,8 @@
                 <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.attr_id)">
                   修改
                 </el-button>
-                <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeParams(scope.row.attr_id)">删除</el-button>
+                <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeParams(scope.row.attr_id)">删除
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -186,6 +192,11 @@
           this.$message.error('获取参数列表失败！')
         }
 
+        res.data.forEach(item => {
+          item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+        })
+
+
         if (this.activeName === 'many') {
           this.manyTableData = res.data
         } else {
@@ -246,20 +257,20 @@
         })
       },
       //根据id删除对应的参数项
-      async removeParams(attr_id){
-        const confirmResult =await this.$confirm('此操作将永久删除该参数, 是否继续?', '提示', {
+      async removeParams(attr_id) {
+        const confirmResult = await this.$confirm('此操作将永久删除该参数, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).catch(err => err)
-          //用户取消了删除操作
-        if(confirmResult !== 'confirm'){
+        //用户取消了删除操作
+        if (confirmResult !== 'confirm') {
           return this.$message.info('已取消删除！')
         }
 
         //删除的业务逻辑
-        const {data:res} =await this.$http.delete(`categories/${this.cateId}/attributes/${attr_id}`)
-        if(res.meta.status !== 200){
+        const { data: res } = await this.$http.delete(`categories/${this.cateId}/attributes/${attr_id}`)
+        if (res.meta.status !== 200) {
           return this.$message.error('删除参数失败！')
         }
 
@@ -301,5 +312,9 @@
 
   .cat_opt {
     margin: 15px 0px;
+  }
+
+  .el-tag {
+    margin: 10px;
   }
 </style>
