@@ -41,7 +41,7 @@
             <el-table-column label="参数名称" prop="attr_name"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog">修改</el-button>
                 <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
               </template>
             </el-table-column>
@@ -60,7 +60,7 @@
             <el-table-column label="属性名称" prop="attr_name"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog">修改</el-button>
                 <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
               </template>
             </el-table-column>
@@ -81,10 +81,28 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="addDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="addParams">确 定</el-button>
-  </span>
+       <el-button @click="addDialogVisible = false">取 消</el-button>
+       <el-button type="primary" @click="addParams">确 定</el-button>
+      </span>
     </el-dialog>
+
+    <!--修改参数的对话框-->
+    <el-dialog
+      :title="'修改' + titleText"
+      :visible.sync="editDialogVisible"
+      width="50%" @close="editDialogClosed">
+      <!--添加参数的对话框-->
+      <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="100px">
+        <el-form-item :label="titleText" prop="attr_name">
+          <el-input v-model="editForm.attr_name"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+       <el-button @click="editDialogVisible = false">取 消</el-button>
+       <el-button type="primary" @click="editParams">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -113,7 +131,17 @@
           attr_name: [{
             required: true, message: '请输入参数名称', trigger: 'blur'
           }]
-        }
+        },
+        //控制修改对话框的显示与隐藏
+        editDialogVisible:false,
+        //修改的表单数据对象
+        editForm:{},
+        //修改表单的验证规则对象
+        editFormRules: {
+          attr_name: [{
+            required: true, message: '请输入参数名称', trigger: 'blur'
+          }]
+        },
       }
     },
     created() {
@@ -180,6 +208,18 @@
           this.addDialogVisible = false
           this.getParamsData()
         })
+      },
+      //点击按钮，展示修改的对话框
+      showEditDialog() {
+        this.editDialogVisible = true
+      },
+      //重置修改的表单
+      editDialogClosed(){
+        this.$refs.editFormRef.resetFields()
+      },
+      //点击按钮，修改参数信息
+      editParams(){
+
       }
     },
     computed: {
