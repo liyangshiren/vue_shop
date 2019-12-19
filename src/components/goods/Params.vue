@@ -41,7 +41,9 @@
             <el-table-column label="参数名称" prop="attr_name"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog">修改</el-button>
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.attr_id)">
+                  修改
+                </el-button>
                 <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
               </template>
             </el-table-column>
@@ -60,7 +62,9 @@
             <el-table-column label="属性名称" prop="attr_name"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog">修改</el-button>
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.attr_id)">
+                  修改
+                </el-button>
                 <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
               </template>
             </el-table-column>
@@ -133,15 +137,15 @@
           }]
         },
         //控制修改对话框的显示与隐藏
-        editDialogVisible:false,
+        editDialogVisible: false,
         //修改的表单数据对象
-        editForm:{},
+        editForm: {},
         //修改表单的验证规则对象
         editFormRules: {
           attr_name: [{
             required: true, message: '请输入参数名称', trigger: 'blur'
           }]
-        },
+        }
       }
     },
     created() {
@@ -210,16 +214,36 @@
         })
       },
       //点击按钮，展示修改的对话框
-      showEditDialog() {
+      async showEditDialog(attr_id) {
+        //查询当前参数的信息
+        const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes/${attr_id}`, { params: { attr_sel: this.activeName } })
+        if (res.meta.status !== 200) {
+          return this.$message.error('获取参数信息失败')
+        }
+        this.editForm = res.data
         this.editDialogVisible = true
       },
       //重置修改的表单
-      editDialogClosed(){
+      editDialogClosed() {
         this.$refs.editFormRef.resetFields()
       },
       //点击按钮，修改参数信息
-      editParams(){
+      editParams() {
+        this.$refs.editFormRef.validate(async valid => {
+          if (!valid) return
+          const { data: res } = await this.$http.put(`categories/${this.cateId}/attributes/${this.editForm.attr_id}`, {
+            attr_name: this.editForm.attr_name,
+            attr_sel: this.activeName
+          })
 
+          if (res.meta.status !== 200) {
+            return this.$message.error('修改参数失败！')
+          }
+
+          this.$message.success('修改参数成功！')
+          this.getParamsData()
+          this.editDialogVisible = false
+        })
       }
     },
     computed: {
