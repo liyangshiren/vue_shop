@@ -52,7 +52,11 @@
         //级联选择框双向数据绑定
         selectedCateKeys: [],
         //被激活的页签的名称
-        activeName: 'many'
+        activeName: 'many',
+        //动态参数的数据
+        manyTableData:[],
+        //静态属性的数据
+        onlyTableData:[]
       }
     },
     created() {
@@ -69,7 +73,15 @@
         this.catelist = res.data
       },
       //级联选择框选中项变化，会触发这个函数
-      async handleChange() {
+      handleChange() {
+        this.getParamsData()
+      },
+      // tab 页签点击事件的处理函数
+      handleTabClick() {
+        this.getParamsData()
+      },
+      //获取参数列表的数据
+      async getParamsData() {
         //证明选中的不是三级分类
         if (this.selectedCateKeys.length !== 3) {
           this.selectedCateKeys = []
@@ -81,14 +93,15 @@
         //根据所选分类的Id，和当前所处的面板，获取对应的参数
         const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`, { params: { sel: this.activeName } })
 
-        if(res.meta.status !== 200){
+        if (res.meta.status !== 200) {
           this.$message.error('获取参数列表失败！')
         }
-        console.log(res.data)
-      },
-      // tab 页签点击事件的处理函数
-      handleTabClick() {
-        console.log(this.activeName)
+
+        if (this.activeName === 'many') {
+          this.manyTableData = res.data
+        } else {
+          this.onlyTableData = res.data
+        }
       }
     },
     computed: {
