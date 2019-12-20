@@ -10,12 +10,12 @@
     <!--卡片视图区-->
     <el-card>
       <el-row :gutter="20">
-        <el-col span="8">
-          <el-input placeholder="请输入内容" v-model="input3">
+        <el-col :span="8">
+          <el-input placeholder="请输入内容" >
             <el-button slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-col>
-        <el-col span="4">
+        <el-col :span="4">
           <el-button type="primary">添加商品</el-button>
         </el-col>
       </el-row>
@@ -26,11 +26,37 @@
 <script>
   export default {
     data () {
-      return {}
+      return {
+        // 查询参数对象
+        queryInfo: {
+          query: '',
+          pagenum: 1,
+          pagesize: 10
+        },
+        // 商品列表
+        goodslist: [],
+        // 总数据条数
+        total: 0
+      }
     },
     created () {
+      this.getGoodsList()
     },
-    methods: {}
+    methods: {
+      //根据分页获取对应的商品列表
+      async getGoodsList () {
+        const { data: res } = await this.$http.get(`goods`, { params: this.queryInfo })
+
+        if(res.meta.status !== 200){
+          return this.$message.error('获取商品列表失败!')
+        }
+
+        this.$message.success('获取商品列表成功!')
+        console.log(res.data)
+        this.goodslist = res.data.goods
+        this.total = res.data.total
+      }
+    }
   }
 </script>
 
