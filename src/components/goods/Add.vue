@@ -29,7 +29,7 @@
       <!--tab栏区域-->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef"
                label-width="100px" label-position="top">
-        <el-tabs v-model="activeIndex" :tab-position="'left'">
+        <el-tabs v-model="activeIndex" :tab-position="'left'" :before-leave="beforeTabLeave" @tab-click="tabClicked">
           <el-tab-pane label="基本信息" name="0">
             <el-form-item label="商品名称" prop="goods_name">
               <el-input v-model="addForm.goods_name"></el-input>
@@ -70,10 +70,10 @@
         addForm: {
           goods_name: '',
           goods_price: 0,
-          goods_weight:0,
-          goods_number:0,
+          goods_weight: 0,
+          goods_number: 0,
           //商品所属的分类数组
-          goods_cat:[]
+          goods_cat: []
         },
         //添加商品的表单数据校验对象
         addFormRules: {
@@ -82,29 +82,31 @@
             message: '请输入商品名称',
             trigger: 'blur'
           }],
-          goods_price:[{
+          goods_price: [{
             required: true,
             message: '请输入商品价格',
             trigger: 'blur'
           }],
-          goods_weight:[{
+          goods_weight: [{
             required: true,
             message: '请输入商品重量',
             trigger: 'blur'
           }],
-          goods_number:[{
+          goods_number: [{
             required: true,
             message: '请输入商品数量',
             trigger: 'blur'
           }],
-          goods_cat:[{
+          goods_cat: [{
             required: true,
             message: '请选择商品分类',
             trigger: 'blur'
           }]
         },
         //商品分类列表
-        catelist:[]
+        catelist: [],
+        //动态参数列表数据
+        manyTableData:[]
       }
     },
     created () {
@@ -112,21 +114,55 @@
     },
     methods: {
       //获取所有商品分类数据
-      async getCateList(){
+      async getCateList () {
         const { data: res } = await this.$http.get(`categories`)
 
-        if(res.meta.status !==200){
+        if (res.meta.status !== 200) {
           return this.$message.error('获取商品分类数据失败！')
         }
         this.catelist = res.data
         console.log(res.data)
       },
       //级联选择器选中项变化处罚的函数
-      handleChange(){
-        if(this.addForm.goods_cat.length !==3){
+      handleChange () {
+        if (this.addForm.goods_cat.length !== 3) {
           this.addForm.goods_cat = []
         }
         console.log(this.addForm.goods_cat)
+      },
+      beforeTabLeave (activeName, oldActiveName) {
+        // console.log('即将离开的'+ oldActiveName)
+        // console.log('即将进入的'+ activeName)
+        // return false
+        if (oldActiveName === '0' && this.addForm.goods_cat.length !== 3) {
+          this.$message.error('请选择商品分类')
+          return false
+        }
+        return true
+      },
+      async tabClicked () {
+        //证明访问的是动态参数面板
+        if (this.activeIndex === '1') {
+          const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`, {
+            params: {
+              sel: 'many'
+            }
+          })
+
+          if(res.meta.status !==200){
+            return this.$message.error('获取动态参数列表失败！')
+          }
+
+          this.manyTableData = res.data
+        }
+      }
+    },
+    computed: {
+      cateId () {
+        if (this.addForm.goods_cat.length === 3) {
+          return this.addForm.goods_cat[2]
+        }
+        return null
       }
     }
   }
