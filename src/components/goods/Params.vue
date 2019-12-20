@@ -46,8 +46,8 @@
                   v-model="scope.row.inputValue"
                   ref="saveTagInput"
                   size="small"
-                  @keyup.enter.native="handleInputConfirm"
-                  @blur="handleInputConfirm"
+                  @keyup.enter.native="handleInputConfirm(scope.row)"
+                  @blur="handleInputConfirm(scope.row)"
                 >
                 </el-input>
                 <!--添加按钮-->
@@ -296,7 +296,8 @@
         this.getParamsData()
       },
       //文本框失去焦点，或者按下了enter键盘
-      handleInputConfirm(){
+      handleInputConfirm(row){
+        row.inputVisible = false
         console.log('ok')
       },
       //点击按钮展示文本输入框
