@@ -303,6 +303,9 @@
           return
         }
         //如果没有return，则证明输入的内容需要做后续处理
+        row.attr_vals.push(row.inputValue.trim())
+        row.inputValue = ''
+        row.inputVisible = false
       },
       //点击按钮展示文本输入框
       showInput(row){
