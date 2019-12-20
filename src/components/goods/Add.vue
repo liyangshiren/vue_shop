@@ -88,12 +88,26 @@
             message: '请输入商品数量',
             trigger: 'blur'
           }],
-        }
+        },
+        //商品分类列表
+        catelist:[]
       }
     },
     created () {
+      this.getCateList()
     },
-    methods: {}
+    methods: {
+      //获取所有商品分类数据
+      async getCateList(){
+        const { data: res } = await this.$http.get(`categories`)
+
+        if(res.meta.status !==200){
+          return this.$message.error('获取商品分类数据失败！')
+        }
+        this.catelist = res.data
+        console.log(res.data)
+      }
+    }
   }
 </script>
 
