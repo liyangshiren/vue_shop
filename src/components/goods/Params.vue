@@ -51,7 +51,8 @@
                 >
                 </el-input>
                 <!--添加按钮-->
-                <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
+                <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag
+                </el-button>
               </template>
             </el-table-column>
             <!--索引列-->
@@ -165,7 +166,7 @@
           attr_name: [{
             required: true, message: '请输入参数名称', trigger: 'blur'
           }]
-        },
+        }
       }
     },
     created() {
@@ -296,8 +297,8 @@
         this.getParamsData()
       },
       //文本框失去焦点，或者按下了enter键盘
-      handleInputConfirm(row){
-        if(row.inputValue.trim().length === 0){
+      async handleInputConfirm(row) {
+        if (row.inputValue.trim().length === 0) {
           row.inputValue = ''
           row.inputVisible = false
           return
@@ -306,13 +307,24 @@
         row.attr_vals.push(row.inputValue.trim())
         row.inputValue = ''
         row.inputVisible = false
+        //需要发起请求，保存这一次操作
+        const {data:res} = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`, {
+          attr_name: row.attr_name,
+          attr_sel: row.attr_sel,
+          attr_vals: row.attr_vals.join(' ')
+        })
+        if(res.meta.status !==200){
+          return this.$message.error('修改参数项失败！')
+        }
+
+        this.$message.success('修改参数成功！')
       },
       //点击按钮展示文本输入框
-      showInput(row){
+      showInput(row) {
         row.inputVisible = true
         //让文本自动获得焦点
         //$nextTick 方法的作用，就是当页面上元素被重新渲染之后，才会指定回调函数中的代码
-        this.$nextTick( _=>{
+        this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus()
         })
       }
@@ -357,7 +369,7 @@
     margin: 10px;
   }
 
-  .input-new-tag{
+  .input-new-tag {
     width: 120px;
   }
 </style>
