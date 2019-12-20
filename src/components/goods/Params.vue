@@ -297,8 +297,12 @@
       },
       //文本框失去焦点，或者按下了enter键盘
       handleInputConfirm(row){
-        row.inputVisible = false
-        console.log('ok')
+        if(row.inputValue.trim().length === 0){
+          row.inputValue = ''
+          row.inputVisible = false
+          return
+        }
+        //如果没有return，则证明输入的内容需要做后续处理
       },
       //点击按钮展示文本输入框
       showInput(row){
