@@ -302,6 +302,11 @@
       //点击按钮展示文本输入框
       showInput(row){
         row.inputVisible = true
+        //让文本自动获得焦点
+        //$nextTick 方法的作用，就是当页面上元素被重新渲染之后，才会指定回调函数中的代码
+        this.$nextTick( _=>{
+          this.$refs.saveTagInput.$refs.input.focus()
+        })
       }
     },
     computed: {
