@@ -71,7 +71,9 @@
               :action="uploadURL"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
-              list-type="picture" :headers="headerObj" :on-success="handleSuccess">
+              list-type="picture"
+              :headers="headerObj"
+              :on-success="handleSuccess">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-tab-pane>
@@ -96,7 +98,7 @@
           //商品所属的分类数组
           goods_cat: [],
           //图片的数组
-          pics:[]
+          pics: []
         },
         //添加商品的表单数据校验对象
         addFormRules: {
@@ -133,9 +135,9 @@
         //静态属性列表数据
         onlyTableData: [],
         //上传图片的url地址
-        uploadURL:'http://127.0.0.1:8888/api/private/v1/upload',
-        headerObj:{
-          Authorization:window.sessionStorage.getItem('token')
+        uploadURL: 'http://127.0.0.1:8888/api/private/v1/upload',
+        headerObj: {
+          Authorization: window.sessionStorage.getItem('token')
         }
       }
     },
@@ -207,13 +209,21 @@
 
       },
       //图片移除事件
-      handleRemove(){
-
+      handleRemove(file) {
+        //1.获取将要删除的图片的临时路径
+        const filePath = file.response.data.tmp_path
+        //2.从 pics 数组中，找到这个图片对应的索引值
+        const i = this.addForm.pics.findIndex(x =>
+          x.pic === filePath
+        )
+        //3.调用数组的 splice 方法，把图片信息对象，从 pics 数组中移除
+        this.addForm.pics.splice(i,1)
+        console.log(this.addForm)
       },
       //监听图片上传成功的事件
-      handleSuccess(response){
+      handleSuccess(response) {
         //1.拼接得到一个图片信息对象
-        const picInfo ={pic: response.data.tmp_path}
+        const picInfo = { pic: response.data.tmp_path }
         //2.将图片信息对象push到pics数组中
         this.addForm.pics.push(picInfo)
         console.log(this.addForm)
