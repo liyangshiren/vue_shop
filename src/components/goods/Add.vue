@@ -115,7 +115,7 @@
           pics: [],
           //商品的详情描述
           goods_introduce: '',
-          attrs:[]
+          attrs: []
         },
         //添加商品的表单数据校验对象
         addFormRules: {
@@ -249,7 +249,7 @@
         console.log(this.addForm)
       },
       add() {
-        this.$refs.addFormRef.validate(valid => {
+        this.$refs.addFormRef.validate(async valid => {
           if (!valid) {
             return this.$message.error('请填写必要的表单项！')
           }
@@ -268,13 +268,24 @@
           // 处理静态属性
           this.onlyTableData.forEach(item => {
             const newInfo = {
-              attr_id:item.attr_id,
+              attr_id: item.attr_id,
               attr_value: item.attr_vals
             }
             this.addForm.attrs.push(newInfo)
           })
           form.attrs = this.addForm.attrs
           console.log(form)
+
+          //发起请求，添加商品
+          //商品的名称必须是唯一的
+          const { data: res } = await this.$http.post('goods', form)
+
+          if(res.meta.status !== 201){
+            return this.$message.error('添加商品失败!')
+          }
+
+          this.$message.success('添加商品成功！')
+          await this.$router.push('/goods')
         })
       }
     },
