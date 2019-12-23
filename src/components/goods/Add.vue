@@ -91,12 +91,14 @@
       title="图片预览"
       :visible.sync="previewVisible"
       width="50%">
-      <img  :src="previewPath" alt="" class="previewImg">
+      <img :src="previewPath" alt="" class="previewImg">
     </el-dialog>
   </div>
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
     data() {
       return {
@@ -112,7 +114,7 @@
           //图片的数组
           pics: [],
           //商品的详情描述
-          goods_introduce:''
+          goods_introduce: ''
         },
         //添加商品的表单数据校验对象
         addFormRules: {
@@ -153,8 +155,8 @@
         headerObj: {
           Authorization: window.sessionStorage.getItem('token')
         },
-        previewPath:'',
-        previewVisible:false
+        previewPath: '',
+        previewVisible: false
       }
     },
     created() {
@@ -234,7 +236,7 @@
           x.pic === filePath
         )
         //3.调用数组的 splice 方法，把图片信息对象，从 pics 数组中移除
-        this.addForm.pics.splice(i,1)
+        this.addForm.pics.splice(i, 1)
         console.log(this.addForm)
       },
       //监听图片上传成功的事件
@@ -245,12 +247,16 @@
         this.addForm.pics.push(picInfo)
         console.log(this.addForm)
       },
-      add(){
+      add() {
         this.$refs.addFormRef.validate(valid => {
-          if(!valid){
+          if (!valid) {
             return this.$message.error('请填写必要的表单项！')
           }
           //执行添加的业务逻辑
+          //lodash cloneDeep(obj)
+          const form = _.cloneDeep(this.addForm)
+          form.goods_cat = form.goods_cat.join(',')
+          console.log(form)
         })
       }
     },
@@ -269,10 +275,12 @@
   .el-checkbox {
     margin: 0 10px 0 0 !important;
   }
-  .previewImg{
+
+  .previewImg {
     width: 100%;
   }
-  .btnAdd{
+
+  .btnAdd {
     margin-top: 15px;
   }
 </style>
