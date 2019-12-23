@@ -114,7 +114,8 @@
           //图片的数组
           pics: [],
           //商品的详情描述
-          goods_introduce: ''
+          goods_introduce: '',
+          attrs:[]
         },
         //添加商品的表单数据校验对象
         addFormRules: {
@@ -256,6 +257,23 @@
           //lodash cloneDeep(obj)
           const form = _.cloneDeep(this.addForm)
           form.goods_cat = form.goods_cat.join(',')
+          //处理动态参数
+          this.manyTableData.forEach(item => {
+            const newInfo = {
+              attr_id: item.attr_id,
+              attr_value: item.attr_vals.join(' ')
+            }
+            this.addForm.attrs.push(newInfo)
+          })
+          // 处理静态属性
+          this.onlyTableData.forEach(item => {
+            const newInfo = {
+              attr_id:item.attr_id,
+              attr_value: item.attr_vals
+            }
+            this.addForm.attrs.push(newInfo)
+          })
+          form.attrs = this.addForm.attrs
           console.log(form)
         })
       }
