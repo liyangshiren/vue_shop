@@ -4,7 +4,7 @@ import {
   Menu, Submenu, MenuItem,
   Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn, Switch, Tooltip,
   Pagination, Dialog, MessageBox, Tag, Tree, Select, Option, Cascader,Alert, TabPane, Tabs, Steps, Step,
-  Checkbox,CheckboxGroup,Upload
+  Checkbox,CheckboxGroup,Upload,Timeline,TimelineItem
 } from 'element-ui'
 // 导入弹框提示组件
 import { Message } from 'element-ui'
@@ -44,6 +44,9 @@ Vue.use(Step)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
 Vue.use(Upload)
+Vue.use(TimelineItem)
+Vue.use(Timeline)
+
 // 挂载到Vue组件上，这样每个vue都可以直接通过this.$message来访问
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
