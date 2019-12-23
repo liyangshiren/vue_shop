@@ -37,7 +37,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showBox"></el-button>
-            <el-button type="success" icon="el-icon-location" size="mini"></el-button>
+            <el-button type="success" icon="el-icon-location" size="mini" @click="showProgressBox"></el-button>
           </template>
         </el-table-column>
 
@@ -72,12 +72,21 @@
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
   </span>
       </el-dialog>
+
+      <!--展示物流进度的对话框-->
+      <el-dialog
+        title="物流进度"
+        :visible.sync="progressVisible"
+        width="50%">
+        <span>这是一段信息</span>
+      </el-dialog>
     </el-card>
   </div>
 </template>
 
 <script>
   import cityData from './citydata'
+
   export default {
     data () {
       return {
@@ -104,7 +113,9 @@
             trigger: 'blur'
           }]
         },
-        cityData: cityData
+        cityData: cityData,
+        progressVisible: false,
+        progressInfo: []
 
       }
     },
@@ -133,15 +144,26 @@
       showBox () {
         this.addressVisible = true
       },
-      addressDialogClosed(){
+      addressDialogClosed () {
         this.$refs.addressFormRef.resetFields()
+      },
+      async showProgressBox () {
+        const {data:res} =  await this.$http.get(`/kuaidi/1106975712662`)
+
+        if(res.meta.status !==200){
+          return this.$message.error('获取物流信息失败！')
+        }
+
+        this.progressInfo =res.data
+        this.progressVisible = true
+        console.log(this.progressInfo)
       }
     }
   }
 </script>
 
 <style lang="less">
-  .el-cascader{
+  .el-cascader {
     width: 100%;
   }
 </style>
