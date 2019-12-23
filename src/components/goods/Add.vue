@@ -80,7 +80,7 @@
           <el-tab-pane label="商品内容" name="4">
             <!--富文本编辑器组件-->
             <quill-editor v-model="addForm.goods_introduce"></quill-editor>
-            <el-button type="primary" class="btnAdd">添加商品</el-button>
+            <el-button type="primary" class="btnAdd" @click="add">添加商品</el-button>
           </el-tab-pane>
         </el-tabs>
       </el-form>
@@ -244,6 +244,14 @@
         //2.将图片信息对象push到pics数组中
         this.addForm.pics.push(picInfo)
         console.log(this.addForm)
+      },
+      add(){
+        this.$refs.addFormRef.validate(valid => {
+          if(!valid){
+            return this.$message.error('请填写必要的表单项！')
+          }
+          //执行添加的业务逻辑
+        })
       }
     },
     computed: {
