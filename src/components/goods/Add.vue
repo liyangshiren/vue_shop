@@ -81,6 +81,13 @@
         </el-tabs>
       </el-form>
     </el-card>
+    <!--图片预览-->
+    <el-dialog
+      title="图片预览"
+      :visible.sync="previewVisible"
+      width="50%">
+      <img  :src="previewPath" alt="" class="previewImg">
+    </el-dialog>
   </div>
 </template>
 
@@ -138,7 +145,9 @@
         uploadURL: 'http://127.0.0.1:8888/api/private/v1/upload',
         headerObj: {
           Authorization: window.sessionStorage.getItem('token')
-        }
+        },
+        previewPath:'',
+        previewVisible:false
       }
     },
     created() {
@@ -205,8 +214,9 @@
         }
       },
       //图片预览事件
-      handlePreview() {
-
+      handlePreview(file) {
+        this.previewPath = file.response.data.url
+        this.previewVisible = true
       },
       //图片移除事件
       handleRemove(file) {
@@ -243,5 +253,8 @@
 <style lang="less" scoped>
   .el-checkbox {
     margin: 0 10px 0 0 !important;
+  }
+  .previewImg{
+    width: 100%;
   }
 </style>
