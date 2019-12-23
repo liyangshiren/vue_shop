@@ -51,7 +51,15 @@
                 @change="handleChange"></el-cascader>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
+          <el-tab-pane label="商品参数" name="1">
+            <!--渲染表单的Item项-->
+            <el-form-item :label="item.attr_name" v-for="item in manyTableData" :key="item.attr_id">
+              <!--复选框组-->
+              <el-checkbox-group v-model="item.attr_vals">
+                <el-checkbox border :label="cb" v-for="(cb,i) in item.attr_vals" :key="i"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
           <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
           <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
@@ -63,7 +71,7 @@
 
 <script>
   export default {
-    data () {
+    data() {
       return {
         activeIndex: '0',
         //添加商品的表单数据对象
@@ -106,15 +114,17 @@
         //商品分类列表
         catelist: [],
         //动态参数列表数据
-        manyTableData:[]
+        manyTableData: [],
+        //静态属性列表数据
+        onlyTableData: []
       }
     },
-    created () {
+    created() {
       this.getCateList()
     },
     methods: {
       //获取所有商品分类数据
-      async getCateList () {
+      async getCateList() {
         const { data: res } = await this.$http.get(`categories`)
 
         if (res.meta.status !== 200) {
@@ -124,13 +134,13 @@
         console.log(res.data)
       },
       //级联选择器选中项变化处罚的函数
-      handleChange () {
+      handleChange() {
         if (this.addForm.goods_cat.length !== 3) {
           this.addForm.goods_cat = []
         }
         console.log(this.addForm.goods_cat)
       },
-      beforeTabLeave (activeName, oldActiveName) {
+      beforeTabLeave(activeName, oldActiveName) {
         // console.log('即将离开的'+ oldActiveName)
         // console.log('即将进入的'+ activeName)
         // return false
@@ -140,7 +150,7 @@
         }
         return true
       },
-      async tabClicked () {
+      async tabClicked() {
         //证明访问的是动态参数面板
         if (this.activeIndex === '1') {
           const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`, {
@@ -149,16 +159,32 @@
             }
           })
 
-          if(res.meta.status !==200){
+          if (res.meta.status !== 200) {
             return this.$message.error('获取动态参数列表失败！')
           }
 
+          res.data.forEach(item => {
+            item.attr_vals = item.attr_vals.length === 0 ? [] :
+              item.attr_vals.split(' ')
+          })
           this.manyTableData = res.data
+        } else if (this.activeIndex === '2') {
+          const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`, {
+            params: {
+              sel: 'only'
+            }
+          })
+
+          if (res.meta.status !== 200) {
+            return this.$message.error('获取静态属性失败！')
+          }
+          console.log(res.data)
+          this.onlyTableData = res.data
         }
       }
     },
     computed: {
-      cateId () {
+      cateId() {
         if (this.addForm.goods_cat.length === 3) {
           return this.addForm.goods_cat[2]
         }
@@ -168,4 +194,8 @@
   }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .el-checkbox {
+    margin: 0 10px 0 0 !important;
+  }
+</style>
