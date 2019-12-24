@@ -18,6 +18,7 @@ module.exports = {
       }
     ],
     // 发布产品时候的插件数组 ... 表示把数组展开放到这里
-    ...prodPlugins
+    ...prodPlugins,
+    '@bable/plugin-syntax-dynamic-import'
   ]
 }
