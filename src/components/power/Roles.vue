@@ -59,7 +59,8 @@
         <el-table-column label="操作" width="300px">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
-            <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+            <el-button size="mini" type="danger" icon="el-icon-delete" @click="removeRoleById(scope.row.id)">删除
+            </el-button>
             <el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRightDialog(scope.row)">分配权限
             </el-button>
           </template>
@@ -245,8 +246,28 @@
         })
       },
       //点击添加角色时先清空一遍对话框数据
-      addDialogClosed(){
+      addDialogClosed() {
         this.$refs.addFormRef.resetFields()
+      },
+      //删除角色
+      async removeRoleById(roleId) {
+        //提示用户是否删除
+        const confirmResult = await this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).catch(err => err)
+        // 如果用户确认了删除，则返回字符串 confirm, 否则会返回cancel
+        if (confirmResult !== 'confirm') {
+          return this.$message.info('已取消删除')
+        }
+        const {data:res} = await this.$http.delete('roles/' + roleId)
+
+        if(res.meta.status !== 200){
+          this.$message.error('删除角色失败！')
+        }
+        this.$message.success('删除角色成功！')
+        this.getRoleList()
       }
     }
   }
